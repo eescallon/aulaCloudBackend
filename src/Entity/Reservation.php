@@ -17,12 +17,12 @@ class Reservation
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="time")
      */
     private $initialDate;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="time")
      */
     private $finalDate;
 
@@ -37,7 +37,7 @@ class Reservation
     private $finalHour;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="time")
      */
     private $reservationDate;
 
@@ -68,13 +68,13 @@ class Reservation
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $idUser;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Room")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $idRoom;
 
@@ -127,18 +127,6 @@ class Reservation
     public function setFinalHour(\DateTimeInterface $finalHour): self
     {
         $this->finalHour = $finalHour;
-
-        return $this;
-    }
-
-    public function getReservationTime(): ?\DateTimeInterface
-    {
-        return $this->reservationTime;
-    }
-
-    public function setReservationTime(\DateTimeInterface $reservationTime): self
-    {
-        $this->reservationTime = $reservationTime;
 
         return $this;
     }

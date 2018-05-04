@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20180427022434 extends AbstractMigration
+class Version20180504023758 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -19,7 +19,7 @@ class Version20180427022434 extends AbstractMigration
         $this->addSql('CREATE TABLE area_user (area_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_4FD6F956BD0F409C (area_id), INDEX IDX_4FD6F956A76ED395 (user_id), PRIMARY KEY(area_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE id_person (id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE person (id INT AUTO_INCREMENT NOT NULL, identification VARCHAR(40) DEFAULT NULL, type_identification VARCHAR(25) NOT NULL, name VARCHAR(60) NOT NULL, last_name VARCHAR(60) NOT NULL, birth_day DATETIME NOT NULL, phone VARCHAR(25) NOT NULL, address VARCHAR(25) NOT NULL, sex VARCHAR(25) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, id_user_id INT NOT NULL, id_room_id INT NOT NULL, initial_date DATETIME NOT NULL, final_date DATETIME NOT NULL, initial_hour TIME NOT NULL, final_hour TIME NOT NULL, reservation_date DATETIME NOT NULL, all_day TINYINT(1) NOT NULL, quantity_assistant INT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL, INDEX IDX_42C8495579F37AE5 (id_user_id), INDEX IDX_42C849558A8AD9E3 (id_room_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE reservation (id INT AUTO_INCREMENT NOT NULL, id_user_id INT DEFAULT NULL, id_room_id INT DEFAULT NULL, initial_date TIME NOT NULL, final_date TIME NOT NULL, initial_hour TIME NOT NULL, final_hour TIME NOT NULL, reservation_date TIME NOT NULL, all_day TINYINT(1) NOT NULL, quantity_assistant INT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) NOT NULL, state VARCHAR(255) NOT NULL, INDEX IDX_42C8495579F37AE5 (id_user_id), INDEX IDX_42C849558A8AD9E3 (id_room_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE room (id INT AUTO_INCREMENT NOT NULL, id_sede_id INT NOT NULL, name VARCHAR(60) NOT NULL, code VARCHAR(60) NOT NULL, type VARCHAR(255) NOT NULL, capacity INT NOT NULL, INDEX IDX_729F519B3F02E8CF (id_sede_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE sede (id INT AUTO_INCREMENT NOT NULL, address VARCHAR(255) NOT NULL, city VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE sede_area (sede_id INT NOT NULL, area_id INT NOT NULL, INDEX IDX_DC7F0910E19F41BF (sede_id), INDEX IDX_DC7F0910BD0F409C (area_id), PRIMARY KEY(sede_id, area_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
