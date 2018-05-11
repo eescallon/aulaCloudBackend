@@ -17,12 +17,12 @@ class Reservation
     private $id;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="datetime")
      */
     private $initialDate;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="datetime")
      */
     private $finalDate;
 
@@ -37,7 +37,7 @@ class Reservation
     private $finalHour;
 
     /**
-     * @ORM\Column(type="time")
+     * @ORM\Column(type="datetime")
      */
     private $reservationDate;
 
