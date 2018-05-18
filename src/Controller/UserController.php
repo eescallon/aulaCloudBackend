@@ -2,12 +2,10 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Annotation\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\User;
+use App\Entity\Person;
 
 class UserController extends Controller
 {
@@ -16,21 +14,33 @@ class UserController extends Controller
      */
     public function index()
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
+
+        $person  = new Person();
+        $person->setIdentification("12345");
+        $person->setTypeIdentification("cedula");
+        $person->setName("Eduardo");
+        $person->setLastName("Escallon");
+        $person->setBirthDay(new \Datetime("1990-08-01"));
+        $person->setPhone("1234567890");
+        $person->setAddress("Direccion");
+        $person->setSex("Masculino");
+        $em->persist($person);
 
         $user = new User();
-        $user->setEmail('user');
-        $user->setPassword("pass");
+        $user->setEmail('eduard.escallon@gmail.com');
+        $user->setPassword("password123");
+        $user->setIdPerson($person);
 
         // tell Doctrine you want to (eventually) save the Product (no queries yet)
-        $entityManager->persist($user);
+        $em->persist($user);
 
         // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
+        $em->flush();
 
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/UserController.php',
+            'message' => 'Usuario creado con exito',
+            'success' => true
         ]);
     }
 
@@ -39,27 +49,32 @@ class UserController extends Controller
      */
 	public function login()
 	{
-		//Obtengo el encoder
-		$encoders = array(new JsonEncoder());
-		//Obtengo el normalizer
-        $normalizers = array(new ObjectNormalizer());
-        //Creo el serializer
-        $serializer = new Serializer($normalizers, $encoders);
-        //Obtengo el repositorio de la clase user para hacer las consultas
+		$request = Request::createFromGlobals();
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
         $repository = $this->getDoctrine()->getRepository(User::class);
         //Hago la consulta del usuario que cumpla con el email y password
         $user = $repository->FindOneBy(["email" => "user", "password" => "pass"]);
         if($user)
         {
-        	//Convierto el objeto user obtenido en la consulta a json
-            $jsonUser = $serializer->serialize($user, 'json');
-            //retorno el json con un success true
+            $jsonUser = array();
+            $jsonUser["id"] = $user->getId();
+            $jsonUser["email"] = $user->getEmail();
+            $person = $user->getIdPerson();
+            $jsonPerson = array();
+            if($person)
+            {
+                $jsonPerosn["id"] = $person->getId();
+                $jsonPerson["name"] = $person->getName();
+                $jsonPerson["lastName"] = $person->getLastname();
+            }
+            $jsonUser["person"] = $jsonPerson;
             return $this->json(array("success" => true, "data" => $jsonUser));
         }
         else
         {
-        	//retorno el json cuando el usuario no existe
-            return $this->json(array("success" => false, "data" => array()));
+            return $this->json(array("success" => false, "message" => "No se encuentra un usuario con ese email y contraseña"));
         }
 	}
 }
