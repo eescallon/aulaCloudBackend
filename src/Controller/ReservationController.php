@@ -18,20 +18,6 @@ class ReservationController extends Controller
         $em = $this->getDoctrine()->getManager();
         $repoRoom = $this->getDoctrine()->getRepository(Room::class);
 
-
-        /*$sede = new Sede();
-        $sede->setAddress("Direccion sede");
-        $sede->setCIty("Bogota");
-        $em->persist($sede);
-
-        $room = new Room();
-        $room->setName("Sala 1");
-        $room->setCode("01");
-        $room->setType("Auditorio");
-        $room->setCapacity(100);
-        $room->setIdSede($sede);
-        $em->persist($room);*/
-
         $room = $repoRoom->Find(1);
 
         $reservation = new Reservation();
@@ -115,32 +101,50 @@ class ReservationController extends Controller
     }
 
 	/**
-     * @Route("/myreservation", name="myreservation")
+     * @Route("/misreservaciones/{idUser}", name="myreservation")
      */
-	public function userReservation()
+	public function userReservation($idUser)
 	{
-		//Obtengo el encoder
-		$encoders = array(new JsonEncoder());
-		//Obtengo el normalizer
-        $normalizers = array(new ObjectNormalizer());
-        //Creo el serializer
-        $serializer = new Serializer($normalizers, $encoders);
         //Obtengo el repositorio de la clase user para hacer las consultas
-        $repository = $this->getDoctrine()->getRepository(Reservation::class);
+        $repoReservation = $this->getDoctrine()->getRepository(Reservation::class);
+        $repoUser = $this->getDoctrine()->getRepository(User::class);
+        $user = $repoUser->find($idUser);
         //Hago la consulta del usuario que cumpla con el email y password
-        $reservations = $repository->FindBy([]);
+        $reservations = $repoReservation->FindBy(["idUser" => $user]);
+        $array = array();
         if($reservations)
         {
-        	//Convierto el objeto user obtenido en la consulta a json
-            $jsonReservations = $serializer->serialize($reservations, 'json');
-            //retorno el json con un success true
-            return $this->json(array("success" => true, "data" => $jsonReservations));
+            foreach($reservations as $reservation)
+            {
+                $temp = array();
+                $temp["id"] = $reservation->getId();
+                $temp["initialDate"] = $reservation->getInitialDate()->format("Y-m-d");
+                $temp["finalDate"] = $reservation->getFinalDate()->format("Y-m-d");
+                $temp["initialHour"] = $reservation->getInitialHour()->format("H:i");
+                $temp["allDay"] = $reservation->getAllDay();
+                $temp["quantityAssistant"] = $reservation->getQuantityAssistant();
+                $temp["name"] = $reservation->getName();
+                $temp["description"] = $reservation->getDescription();
+                $temp["state"] = $reservation->getState();
+                $room = $reservation->getIdRoom();
+                $roomArray = Array();
+                if($room)
+                {
+                    $roomArray["id"] = $room->getId();
+                    $roomArray["name"] = $room->getName();
+                    $roomArray["code"] = $room->getCode();
+                    $roomArray["type"] = $room->getType();
+                    $sede = $room->getIdSede();
+                    $sedeArray = array();
+                    $sedeArray["address"] = $sede->getAddress();
+                    $sedeArray["city"] = $sede->getCity();
+                    $roomArray["sede"] = $sedeArray;
+                }
+                $temp["room"] = $roomArray;
+                $array[] = $temp;
+            }
         }
-        else
-        {
-        	//retorno el json cuando el usuario no existe
-            return $this->json(array("success" => false, "data" => array()));
-        }
+        return $this->json(array("success" => true, "data" => $array));
 	}
 
     /**

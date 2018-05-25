@@ -55,7 +55,7 @@ class UserController extends Controller
 
         $repository = $this->getDoctrine()->getRepository(User::class);
         //Hago la consulta del usuario que cumpla con el email y password
-        $user = $repository->FindOneBy(["email" => "user", "password" => "pass"]);
+        $user = $repository->FindOneBy(["email" => $data["user"], "password" => $data["password"]]);
         if($user)
         {
             $jsonUser = array();
