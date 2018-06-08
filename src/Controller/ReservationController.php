@@ -33,8 +33,6 @@ class ReservationController extends Controller
         $reservation->setstate("Finalizado");
         $reservation->setIdRoom($room);
         $em->persist($reservation);
- 
-
 
         // tell Doctrine you want to (eventually) save the Product (no queries yet)
 
@@ -110,7 +108,7 @@ class ReservationController extends Controller
         $repoUser = $this->getDoctrine()->getRepository(User::class);
         $user = $repoUser->find($idUser);
         //Hago la consulta del usuario que cumpla con el email y password
-        $reservations = $repoReservation->FindBy(["idUser" => $user]);
+        $reservations = $repoReservation->FindBy(["idUser" => $user, "state" => "Activo"]);
         $array = array();
         if($reservations)
         {

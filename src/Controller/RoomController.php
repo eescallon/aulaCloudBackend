@@ -31,7 +31,7 @@ class RoomController extends Controller
             $temp["capacity"] = $room->getCapacity();
             $array[] = $temp;
         }
-        return.$this->json(array("success" => true, "data" => $array));
+        return $this->json(array("success" => true, "data" => $array));
     }
 }
 ?>
